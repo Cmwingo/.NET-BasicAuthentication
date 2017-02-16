@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using System.Security.Claims
+
+@model IEnumerable<BasicAuthentication.Models.Item>
+
+<h2>Here is your list of tasks, @User.Identity.Name</h2>
+<hr />
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var listItem in Model)
+        {
+            <li>@Html.DisplayFor(modelItem => listItem.Description)</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No tasks have been added yet!</p>
+}
+
+@Html.ActionLink("Create new", "Create")
