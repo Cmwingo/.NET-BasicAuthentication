@@ -18,12 +18,14 @@ namespace BasicAuthentication.Controllers
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RoleController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext db)
+        public RoleController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext db, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
+            _roleManager = roleManager;
         }
 
         // GET: /<controller>/
@@ -32,5 +34,24 @@ namespace BasicAuthentication.Controllers
             var roles = _db.Roles.ToList();
             return View(roles);
         }
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateRoleViewModel model)
+        {
+            var role = new IdentityRole { Name = model.Role };
+            IdentityResult result = await _roleManager.CreateAsync(role);
+            if(result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
     }
 }
