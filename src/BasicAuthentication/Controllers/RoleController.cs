@@ -8,6 +8,8 @@ using BasicAuthentication.Models;
 using BasicAuthentication.ViewModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -90,5 +92,10 @@ namespace BasicAuthentication.Controllers
             }
         }
 
+        public IActionResult ManageUserRoles()
+        {
+            ViewBag.Roles = new SelectList(_db.Roles, "Id", "Name");
+            return View();
+        }
     }
 }
