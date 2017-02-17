@@ -53,5 +53,20 @@ namespace BasicAuthentication.Controllers
             }
         }
 
+        public async Task<IActionResult> Delete(string RoleName)
+        {
+            var thisRole = await _roleManager.FindByNameAsync(RoleName);
+            return View(thisRole);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(string RoleName)
+        {
+            var thisRole = await _roleManager.FindByNameAsync(RoleName);
+            _db.Roles.Remove(thisRole);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
     }
 }
