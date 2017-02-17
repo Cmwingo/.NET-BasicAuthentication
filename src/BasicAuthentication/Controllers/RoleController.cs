@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using BasicAuthentication.Models;
 using BasicAuthentication.ViewModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -66,6 +67,27 @@ namespace BasicAuthentication.Controllers
             _db.Roles.Remove(thisRole);
             _db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Edit(string RoleName)
+        {
+            var thisRole = await _roleManager.FindByNameAsync(RoleName);
+            return View(thisRole);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(IdentityRole role)
+        {
+            IdentityResult result = await _roleManager.UpdateAsync(role);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View();
+            }
         }
 
     }
