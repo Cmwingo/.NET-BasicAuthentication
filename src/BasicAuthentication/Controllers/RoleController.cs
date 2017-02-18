@@ -113,5 +113,22 @@ namespace BasicAuthentication.Controllers
 
             return View("ManageUserRoles");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetRoles(string UserName)
+        {
+            if (!string.IsNullOrWhiteSpace(UserName))
+            {
+                ApplicationUser user = _db.Users.Where(u => u.UserName.Equals(UserName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+
+                ViewBag.RolesForThisUser = await _userManager.GetRolesAsync(user);
+
+                // prepopulat roles for the view dropdown
+                ViewBag.Roles = new SelectList(_db.Roles, "Name", "Name");
+            }
+
+            return View("ManageUserRoles");
+        }
     }
 }
