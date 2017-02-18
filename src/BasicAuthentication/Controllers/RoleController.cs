@@ -94,8 +94,24 @@ namespace BasicAuthentication.Controllers
 
         public IActionResult ManageUserRoles()
         {
-            ViewBag.Roles = new SelectList(_db.Roles, "Id", "Name");
+            ViewBag.Roles = new SelectList(_db.Roles, "Name", "Name");
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RoleAddToUser(string UserName, string Roles)
+        {
+
+            ApplicationUser user = _db.Users.Where(u => u.UserName.Equals(UserName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            await _userManager.AddToRoleAsync(user, Roles);
+
+            ViewBag.ResultMessage = "Role created successfully !";
+
+            // prepopulat roles for the view dropdown
+            ViewBag.Roles = new SelectList(_db.Roles, "Name", "Name");
+
+            return View("ManageUserRoles");
         }
     }
 }
