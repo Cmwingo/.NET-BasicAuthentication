@@ -130,5 +130,26 @@ namespace BasicAuthentication.Controllers
 
             return View("ManageUserRoles");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteRoleForUser(string UserName, string Roles)
+        {
+            ApplicationUser user = _db.Users.Where(u => u.UserName.Equals(UserName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+
+            if (await _userManager.IsInRoleAsync(user, Roles))
+            {
+                await _userManager.RemoveFromRoleAsync(user, Roles);
+                ViewBag.ResultMessage = "Role removed from this user successfully !";
+            }
+            else
+            {
+                ViewBag.ResultMessage = "This user doesn't belong to selected role.";
+            }
+            // prepopulat roles for the view dropdown
+            ViewBag.Roles = new SelectList(_db.Roles, "Name", "Name");
+
+            return View("ManageUserRoles");
+        }
     }
 }
